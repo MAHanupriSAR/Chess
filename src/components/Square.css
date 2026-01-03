@@ -1,0 +1,15 @@
+.square{
+    height: 90px;
+    width: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-size: 30px;
+}
+.black_square{
+    background-color: #B78C68;
+}
+.white_square{
+    background-color: #F0DAB7;
+}
