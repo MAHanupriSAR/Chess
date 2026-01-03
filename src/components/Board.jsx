@@ -14,8 +14,11 @@ export default function Board({fenString}) {
             );
         }
     }
+    function handleClick(e){
+        console.log(e.target);
+    }
     return (
-        <div className="board">
+        <div onClick={handleClick} className="board">
             {boardSquares}
         </div>
     );

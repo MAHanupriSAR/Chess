@@ -1,3 +1,5 @@
+import './Piece.css';
+
 import b_p from '../assets/black_pieces/p.svg';
 import b_r from '../assets/black_pieces/r.svg';
 import b_n from '../assets/black_pieces/n.svg';
@@ -23,6 +25,6 @@ export default function Piece({ piece }) {
    if (!piece) return null;
 
    return (
-      <img src={pieceImages[piece]} alt={piece} className="chess-piece" />
+      <img src={pieceImages[piece]} alt={piece} className="chess_piece" />
    );
 }

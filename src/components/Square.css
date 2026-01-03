@@ -1,15 +1,17 @@
 .square{
     height: 90px;
     width: 90px;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    font-size: 30px;
+}
+.selected{
+    background-color: #F7F769;
 }
 .black_square{
-    background-color: #B78C68;
+    background-color: #769656;
 }
 .white_square{
-    background-color: #F0DAB7;
+    background-color: #EEEED2;
 }
