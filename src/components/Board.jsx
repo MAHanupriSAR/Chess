@@ -4,14 +4,18 @@ import fenToBoard from '../utils/fenOperations';
 import './Board.css';
 import { useState } from 'react';
 import getPieceColor from '../utils/getPieceColor';
+import isValidMove from '../utils/moveValidation';
 
 export default function Board({fenString}) {
-    
+    const [turn, setTurn] = useState("white");
     const [board, setBoard] = useState(() => fenToBoard(fenString));
     const [selectedSquare, setSelectedSquare] = useState(null);
 
     function handleSquareClick(row, col){
         if(!selectedSquare){
+            if(board[row][col] && getPieceColor(board[row][col]) != turn){
+                return;
+            }
             if(board[row][col]){
                 setSelectedSquare({row,col});
             }
@@ -30,7 +34,14 @@ export default function Board({fenString}) {
             return;
         }
         
+        if(!isValidMove(board[prevRow][prevCol], prevRow, prevCol, row, col)){
+            // setSelectedSquare(null);
+            return;
+        }
+
         movePiece(prevRow, prevCol, row, col);
+
+        setTurn(turn=="white"?"black":"white")
     }
 
     function movePiece(fromRow, fromCol, toRow, toCol) {
