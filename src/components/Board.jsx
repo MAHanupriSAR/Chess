@@ -67,7 +67,7 @@ export default function Board({fenString}) {
         setSelectedSquare(null);
         setValidMoves(new Set());
 
-        if(!isCapture){
+        if(!isCapture){ 
             new Audio(moveSoundFile).play();
         }
         else{
