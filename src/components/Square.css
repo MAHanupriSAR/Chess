@@ -16,12 +16,12 @@
 .white_square{
     background-color: #EEEED2;
 }
+
 .selected{
     background-color: #F7F769;
 }
 
 .valid_move{
-    /* Create a semi-transparent circle/dot overlay */
     background-image: radial-gradient(circle, rgba(0,0,0,0.2) 20%, transparent 25%);
 }
 
