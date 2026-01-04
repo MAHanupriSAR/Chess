@@ -6,6 +6,9 @@ import { useState } from 'react';
 import getPieceColor from '../utils/getPieceColor';
 import getValidMoves from '../utils/moveRules';
 
+import moveSoundFile from '../assets/sounds/move_self.mp3';
+import captureSoundFile from '../assets/sounds/capture.mp3'
+
 export default function Board({fenString}) {
     const [turn, setTurn] = useState("white");
     const [board, setBoard] = useState(() => fenToBoard(fenString));
@@ -55,12 +58,21 @@ export default function Board({fenString}) {
     function movePiece(fromRow, fromCol, toRow, toCol) {
         const newBoard = board.map(r => [...r]);
 
+        const isCapture = newBoard[toRow][toCol] !== null;
+
         newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
         newBoard[fromRow][fromCol] = null;
 
         setBoard(newBoard);
         setSelectedSquare(null);
         setValidMoves(new Set());
+
+        if(!isCapture){
+            new Audio(moveSoundFile).play();
+        }
+        else{
+            new Audio(captureSoundFile).play();
+        }
     }
 
     const boardSquares = [];
