@@ -8,6 +8,8 @@
 
     /* padding: 10%;  */
     box-sizing: border-box; 
+}
+.interactive{
     cursor: pointer;
 }
 .black_square{

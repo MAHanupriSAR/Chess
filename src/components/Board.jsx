@@ -79,6 +79,12 @@ export default function Board({fenString}) {
             //case3 this square contains a piece and can be captured
             const isCapture = isHint && piece !== null;
 
+            //a sqaure will be interactive only when it satisfies following:
+            //color of piece in square = turn
+            //it is a hint
+            //it is a capture
+            const isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
+
             boardSquares.push(
                 <Square 
                     key={index} 
@@ -88,6 +94,7 @@ export default function Board({fenString}) {
                     isSelected={isSelected}
                     isValidMove = {isHint}
                     isCapture = {isCapture}
+                    isInteractive={isInteractive}
                     handleClick={() => handleSquareClick(row, col)}
                 />
             );
