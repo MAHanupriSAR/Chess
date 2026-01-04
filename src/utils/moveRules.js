@@ -71,7 +71,7 @@ export default function getValidMoves(piece, selfRow, selfCol, board){
     }
 
     //bishop
-    if(type === 'b' || type === 'q'){
+    if(type === 'b' || type === 'q'){   
         const dirs =  [[-1, -1], [-1, 1], [1, -1], [1, 1]];
         dirs.forEach(([dr, dc])=>{
             for(let i = 1; i<8; i++){
