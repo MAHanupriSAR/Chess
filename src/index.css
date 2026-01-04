@@ -5,6 +5,7 @@
 }
 
 body{
+    background-image: url("../src/assets/background.jpg");
     background-color: black;
     min-height: 100vh;
 

@@ -18,6 +18,7 @@ export default function Board({fenString}) {
                 return;
             }
             if(board[row][col]){
+                //if king is getting checkmated and this piece cant save it, we cant select it
                 setSelectedSquare({row,col});
                 const moves = getValidMoves(board[row][col], row, col, board);
                 const moveSet = new Set(moves.map(m => `${m.row},${m.col}`));
@@ -48,7 +49,7 @@ export default function Board({fenString}) {
 
         movePiece(prevRow, prevCol, row, col);
 
-        setTurn(turn=="white"?"black":"white")
+        setTurn(turn=="white"?"black":"white");
     }
 
     function movePiece(fromRow, fromCol, toRow, toCol) {

@@ -1,10 +1,14 @@
 .square{
-    height: 90px;
-    width: 90px;
+    height: 100%;
+    width: 100%;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    /* padding: 10%;  */
+    box-sizing: border-box; 
+    cursor: pointer;
 }
 .black_square{
     background-color: #769656;

@@ -2,4 +2,10 @@
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
+
+    width: min(80vw, 80vh);
+    height: min(80vw, 80vh);
+
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border: 5px solid #36322e;
 }
