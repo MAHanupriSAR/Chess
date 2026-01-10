@@ -6,12 +6,15 @@ import { useEffect, useState } from 'react';
 import getPieceColor from '../utils/getPieceColor';
 import getValidMoves from '../utils/moveRules';
 import { isMoveSafe, isGameOver } from '../utils/checkmateLogic';
+import { getComputerMove } from '../engine/chessEngine';
 
 import moveSoundFile from '../assets/sounds/move_self.mp3';
 import captureSoundFile from '../assets/sounds/capture.mp3'
 
 export default function Board({fenString}) {
-    const [turn, setTurn] = useState("white");
+    const selfPieceColor = "white";
+    const opponentPieceColor = "black"
+    const [turn, setTurn] = useState(selfPieceColor);
     const [board, setBoard] = useState(() => fenToBoard(fenString));
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [validMoves, setValidMoves] = useState(new Set());
@@ -20,21 +23,38 @@ export default function Board({fenString}) {
     useEffect(()=>{
         const result = isGameOver(board, turn);
         if(result){
+            setGameStatus(result);
             alert(`Game Over: ${result.toUpperCase()}!`);
         }
     },[board, turn]);
 
+    useEffect(()=>{
+        if(turn === opponentPieceColor && !gameStatus){
+            const timer = setTimeout(() => {
+                const move = getComputerMove(board, opponentPieceColor);
+                
+                if (move) {
+                    movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
+                    setTurn(selfPieceColor);
+                }
+            }, 5000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [turn, board, gameStatus])
+
     function handleSquareClick(row, col){
         if(gameStatus)return;
+        if(turn === opponentPieceColor)return;
         if(!selectedSquare){
             if(board[row][col] && getPieceColor(board[row][col]) != turn){
                 return;
             }
             if(board[row][col]){
-                setSelectedSquare({row,col});x``
-                const validMoves = getValidMoves(board[row][col], row, col, board);
+                setSelectedSquare({row,col});
+                const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
                 const safeAndValidMoves = validMoves.filter((validMove)=>{
-                    return isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
+                    return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
                 });
                 const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
                 setValidMoves(moveSet);
@@ -52,9 +72,9 @@ export default function Board({fenString}) {
         // Check for same color pieces -> switch piece selection
         if(board[row][col] && getPieceColor(board[row][col]) == getPieceColor(board[prevRow][prevCol])){
             setSelectedSquare({row,col});
-            const validMoves = getValidMoves(board[row][col], row, col, board);
+            const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
             const safeAndValidMoves = validMoves.filter((validMove)=>{
-                return isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
+                return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
             });
             const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
             setValidMoves(moveSet);
@@ -67,7 +87,7 @@ export default function Board({fenString}) {
 
         movePiece(prevRow, prevCol, row, col);
 
-        setTurn(turn=="white"?"black":"white");
+        setTurn(turn==selfPieceColor?opponentPieceColor:selfPieceColor);
     }
 
     function movePiece(fromRow, fromCol, toRow, toCol) {
@@ -110,7 +130,8 @@ export default function Board({fenString}) {
             //color of piece in square = turn
             //it is a hint
             //it is a capture
-            const isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
+            // const isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
+            const isInteractive = (piece && getPieceColor(piece)===selfPieceColor && getPieceColor(piece)===turn) ||isHint || isCapture
 
             boardSquares.push(
                 <Square 

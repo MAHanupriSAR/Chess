@@ -1,7 +1,7 @@
 import getPieceColor from "./getPieceColor";
 import getValidMoves from "./moveRules"; 
 
-export function isCheck(board, kingColor) {
+export function isCheck(board, kingColor, selfPieceColor) {
     let kingRow, kingCol;
     const kingChar = kingColor === "white" ? "K" : "k";
 
@@ -68,8 +68,8 @@ export function isCheck(board, kingColor) {
 
     // 4. Check Pawn Threats
     // Pawns only attack diagonally forward.
-    // White King looks "Up" (-1) for Black Pawns. Black King looks "Down" (+1).
-    const pawnDir = kingColor === "white" ? -1 : 1; 
+    // selfPieceColor King looks "Up" (-1) for opponentPieceColor Pawns. opponentPieceColor King looks "Down" (+1).
+    const pawnDir = kingColor === selfPieceColor ? -1 : 1; 
     const pawnOffsets = [[pawnDir, -1], [pawnDir, 1]];
     
     for (const [dr, dc] of pawnOffsets) {
@@ -100,7 +100,7 @@ export function isCheck(board, kingColor) {
 // --- OPTIMIZATION 2: Make/Unmake (Zero Memory Allocation) ---
 // Standard engines don't "copy" the board (which is slow). 
 // They make the move on the real board, check safety, and then undo it immediately.
-export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor) {
+export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, selfPieceColor) {
     const movingPiece = board[fromRow][fromCol];
     const capturedPiece = board[toRow][toCol]; // Save what was there (if any)
 
@@ -110,7 +110,7 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor) {
 
     // 2. CHECK Safety
     // We pass the SAME board object, which is now temporarily updated.
-    const safe = !isCheck(board, turnColor);
+    const safe = !isCheck(board, turnColor, selfPieceColor);
 
     // 3. UNMAKE Move (Restore board exactly as it was)
     board[fromRow][fromCol] = movingPiece;
@@ -119,7 +119,7 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor) {
     return safe;
 }
 
-export function isGameOver(board,turnColor){
+export function isGameOver(board,turnColor,selfPieceColor){
     let hasLegalMove = false;
 
     for(let row = 0; row<8; row++){
@@ -127,9 +127,9 @@ export function isGameOver(board,turnColor){
             const piece = board[row][col];
             if(!piece) continue;
             if(getPieceColor(piece) !== turnColor) continue;
-            const moves = getValidMoves(piece, row, col, board);
+            const moves = getValidMoves(piece, row, col, board, selfPieceColor);
             for(let move of moves){
-                if(isMoveSafe(board, row, col, move.row, move.col,turnColor)){
+                if(isMoveSafe(board, row, col, move.row, move.col,turnColor,selfPieceColor)){
                     hasLegalMove = true;
                     break;
                 }
