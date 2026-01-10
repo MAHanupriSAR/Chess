@@ -31,10 +31,10 @@ export default function Board({fenString}) {
                 return;
             }
             if(board[row][col]){
-                setSelectedSquare({row,col});
+                setSelectedSquare({row,col});x``
                 const validMoves = getValidMoves(board[row][col], row, col, board);
                 const safeAndValidMoves = validMoves.filter((validMove)=>{
-                    isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
+                    return isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
                 });
                 const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
                 setValidMoves(moveSet);
@@ -54,7 +54,7 @@ export default function Board({fenString}) {
             setSelectedSquare({row,col});
             const validMoves = getValidMoves(board[row][col], row, col, board);
             const safeAndValidMoves = validMoves.filter((validMove)=>{
-                isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
+                return isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
             });
             const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
             setValidMoves(moveSet);
