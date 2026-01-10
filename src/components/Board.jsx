@@ -2,9 +2,10 @@ import Square from './Square';
 import fenToBoard from '../utils/fenOperations';
 
 import './Board.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import getPieceColor from '../utils/getPieceColor';
 import getValidMoves from '../utils/moveRules';
+import { isMoveSafe, isGameOver } from '../utils/checkmateLogic';
 
 import moveSoundFile from '../assets/sounds/move_self.mp3';
 import captureSoundFile from '../assets/sounds/capture.mp3'
@@ -14,6 +15,14 @@ export default function Board({fenString}) {
     const [board, setBoard] = useState(() => fenToBoard(fenString));
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [validMoves, setValidMoves] = useState(new Set());
+    const [gameStatus, setGameStatus] = useState(null);
+
+    useEffect(()=>{
+        const result = isGameOver(board, turn);
+        if(result){
+            alert(`Game Over: ${result.toUpperCase()}!`);
+        }
+    },[board, turn]);
 
     function handleSquareClick(row, col){
         if(!selectedSquare){
@@ -21,7 +30,6 @@ export default function Board({fenString}) {
                 return;
             }
             if(board[row][col]){
-                //if king is getting checkmated and this piece cant save it, we cant select it
                 setSelectedSquare({row,col});
                 const moves = getValidMoves(board[row][col], row, col, board);
                 const moveSet = new Set(moves.map(m => `${m.row},${m.col}`));
@@ -40,8 +48,11 @@ export default function Board({fenString}) {
         // Check for same color pieces -> switch piece selection
         if(board[row][col] && getPieceColor(board[row][col]) == getPieceColor(board[prevRow][prevCol])){
             setSelectedSquare({row,col});
-            const moves = getValidMoves(board[row][col], row, col, board);
-            const moveSet = new Set(moves.map(m => `${m.row},${m.col}`));
+            const validMoves = getValidMoves(board[row][col], row, col, board);
+            const safeAndValidMoves = validMoves.filter((validMove)=>{
+                isMoveSafe(board, row, col, validMove.row, validMove.col, turn);
+            });
+            const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
             setValidMoves(moveSet);
             return;
         }

@@ -118,3 +118,33 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor) {
 
     return safe;
 }
+
+export function isGameOver(board,turnColor){
+    let hasLegalMove = false;
+
+    for(let row = 0; row<8; row++){
+        for(let col = 0; col<8; col++){
+            const piece = board[row][col];
+            if(!piece) continue;
+            if(getPieceColor(piece) !== turnColor) continue;
+            const moves = getValidMoves(piece, row, col, board);
+            for(let move of moves){
+                if(isMoveSafe(board, row, col, move.row, move.col,turnColor)){
+                    hasLegalMove = true;
+                    break;
+                }
+            }
+            if(hasLegalMove) break;
+        }
+        if(hasLegalMove) break;
+    }
+
+    if(hasLegalMove) return null;
+
+    if(isCheck(board, turnColor)){
+        return "checkmate";
+    }
+    else{
+        return "stalemate";
+    }
+}
