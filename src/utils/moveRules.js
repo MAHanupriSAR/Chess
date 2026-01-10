@@ -3,7 +3,7 @@ import getPieceColor from "./getPieceColor";
 export default function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor){
     const type = piece.toLowerCase();
     const pieceColor = getPieceColor(piece);
-    const pieceIsWhite = piece === piece.toUpperCase();
+    const pieceIsSelfPiece = pieceColor === selfPieceColor;
     const moves = [];
 
     function checkAndAdd(targetRow,targetCol){
@@ -31,7 +31,7 @@ export default function getValidMoves(piece, pieceRow, pieceCol, board, selfPiec
 
     if(type === 'p'){ //pawn
         const doubleForward = pieceColor === selfPieceColor ? pieceRow === 6 : pieceRow === 1;
-        const dir = pieceIsWhite ? -1 : 1;
+        const dir = pieceIsSelfPiece ? -1 : 1;
 
         if(board[pieceRow + dir] && !board[pieceRow+dir][pieceCol]){
             moves.push({row: pieceRow+dir, col: pieceCol});

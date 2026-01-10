@@ -1,3 +1,10 @@
+.board-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
 .board{
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -9,4 +16,19 @@
     /* box-shadow: h-offset v-offset blur-radius spread-radius color; */
     box-shadow: -10px 10px 10px 5px rgba(0,0,0,0.5);
     border: 2px solid #36322e;
+}
+
+.exit-btn {
+    padding: 10px 25px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.exit-btn:hover {
+    background-color: #c0392b;
 }
