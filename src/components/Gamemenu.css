@@ -3,19 +3,25 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
-    padding: 2rem;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    
+    gap: clamp(1rem, 4vw, 2rem);
+    padding: clamp(1.5rem, 5vw, 3rem);
+
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 12px;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+    width: min(90vw, 500px);
+    box-sizing: border-box;
 }
 
 .menu-title {
-    font-size: 3rem;
+    font-size: clamp(2rem, 10vw, 3rem);
     color: #fff;
     margin: 0;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    text-align: center;
 }
 
 .menu-options {
@@ -27,7 +33,7 @@
 }
 
 .menu-btn {
-    padding: 15px 40px;
+    padding: 15px 30px;
     font-size: 1.2rem;
     cursor: pointer;
     background-color: #4a90e2;
@@ -35,25 +41,38 @@
     border: none;
     border-radius: 8px;
     transition: transform 0.2s, background-color 0.2s;
-    width: 250px;
     text-align: center;
+
+    width: 100%;
+    max-width: 250px;
 }
 
 .menu-btn:hover {
     background-color: #357abd;
     transform: translateY(-2px);
-    
 }
 
 .menu-sub-title {
     color: #ddd;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .color-selection {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Optional: Make color buttons fill space nicely when wrapped */
+.color-selection .menu-btn {
+    /* - flex-grow: 1 -> Fill empty space
+       - flex-basis: 120px -> Minimum width before wrapping occurs
+    */
+    flex: 1 1 120px;
+    max-width: 250px; /* Still respect the max width */
 }
 
 .back-btn {
