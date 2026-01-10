@@ -11,9 +11,9 @@ import { getComputerMove } from '../engine/chessEngine';
 import moveSoundFile from '../assets/sounds/move_self.mp3';
 import captureSoundFile from '../assets/sounds/capture.mp3'
 
-export default function Board({fenString}) {
-    const selfPieceColor = "white";
-    const opponentPieceColor = "black"
+export default function Board({ fenString, vsComputer, playerColor, onReset }) {
+    const selfPieceColor = playerColor;
+    const opponentPieceColor = selfPieceColor==="white" ? "black" : "white";
     const [turn, setTurn] = useState(selfPieceColor);
     const [board, setBoard] = useState(() => fenToBoard(fenString));
     const [selectedSquare, setSelectedSquare] = useState(null);
@@ -29,7 +29,7 @@ export default function Board({fenString}) {
     },[board, turn]);
 
     useEffect(()=>{
-        if(turn === opponentPieceColor && !gameStatus){
+        if(vsComputer && turn === opponentPieceColor && !gameStatus){
             const timer = setTimeout(() => {
                 const move = getComputerMove(board, opponentPieceColor);
                 
@@ -37,7 +37,7 @@ export default function Board({fenString}) {
                     movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
                     setTurn(selfPieceColor);
                 }
-            }, 5000);
+            }, 50);
 
             return () => clearTimeout(timer);
         }
@@ -45,7 +45,7 @@ export default function Board({fenString}) {
 
     function handleSquareClick(row, col){
         if(gameStatus)return;
-        if(turn === opponentPieceColor)return;
+        if(vsComputer && turn === opponentPieceColor)return;
         if(!selectedSquare){
             if(board[row][col] && getPieceColor(board[row][col]) != turn){
                 return;
@@ -148,9 +148,19 @@ export default function Board({fenString}) {
             );
         }
     }
+    // return (
+    //     <div className="board">
+    //         {boardSquares}
+    //     </div>
+    // );
     return (
-        <div className="board">
-            {boardSquares}
+        <div className="board-container">
+            <div className="board">
+                {boardSquares}
+            </div>
+            <button className="exit-btn" onClick={onReset}>
+                Exit to Menu
+            </button>
         </div>
     );
 }
