@@ -12,7 +12,7 @@ export default function GameMenu({ onStartGame }) {
                 <div className="menu-options">
                     <button 
                         className="menu-btn"
-                        onClick={() => onStartGame({ vsComputer: false })}
+                        onClick={() => onStartGame({ vsComputer: false, playerColor: 'white' })}
                     >
                         Play vs Human
                     </button>

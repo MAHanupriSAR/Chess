@@ -37,7 +37,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                     movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
                     setTurn(selfPieceColor);
                 }
-            }, 50);
+            }, 5000);
 
             return () => clearTimeout(timer);
         }
@@ -130,8 +130,13 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             //color of piece in square = turn
             //it is a hint
             //it is a capture
-            // const isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
-            const isInteractive = (piece && getPieceColor(piece)===selfPieceColor && getPieceColor(piece)===turn) ||isHint || isCapture
+            let isInteractive = false;
+            if(vsComputer){
+                isInteractive = (piece && getPieceColor(piece)===selfPieceColor && getPieceColor(piece)===turn) ||isHint || isCapture
+            }
+            else{
+                isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
+            }
 
             boardSquares.push(
                 <Square 
