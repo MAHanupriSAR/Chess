@@ -164,7 +164,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                 {boardSquares}
             </div>
             <button className="exit-btn" onClick={onReset}>
-                Exit to Menu
+                ←
             </button>
         </div>
     );
