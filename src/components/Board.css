@@ -34,8 +34,9 @@
     outline: none;
     cursor: pointer;
 
-    color: rgba(255, 255, 255, 0.7);
-    font-size: clamp(2rem, 5vw, 3rem);
+    /* color: rgba(255, 255, 255, 0.7); */
+    color: black;
+    font-size: clamp(1rem, 5vw, 2rem);
     line-height: 1;
     font-weight: bold;
 
@@ -47,7 +48,7 @@
 }
 
 .exit-btn:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(0, 0, 0, 0.3);
     transform: none;
 }
 

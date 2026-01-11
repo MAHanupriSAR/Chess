@@ -164,7 +164,13 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                 {boardSquares}
             </div>
             <button className="exit-btn" onClick={onReset}>
-                ←
+                {/* <i className="fa-jelly fa-solid fa-arrow-left"></i> */}
+                {/* <i className="fa-solid fa-caret-left"></i> */}
+                {/* <i className="fa-solid fa-circle-arrow-left"></i> */}
+                {/* <i className="fa-solid fa-circle-chevron-left"></i> */}
+                {/* <i className="fa-solid fa-circle-left"></i> */}
+                <i className="fa-regular fa-circle-left"></i>
+                {/* <i className="fa-solid fa-left-long"></i> */}
             </button>
         </div>
     );
