@@ -37,7 +37,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                     movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
                     setTurn(selfPieceColor);
                 }
-            }, 5000);
+            }, 50);
 
             return () => clearTimeout(timer);
         }
@@ -51,13 +51,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                 return;
             }
             if(board[row][col]){
-                setSelectedSquare({row,col});
-                const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
-                const safeAndValidMoves = validMoves.filter((validMove)=>{
-                    return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
-                });
-                const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
-                setValidMoves(moveSet);
+                selectPiece(row, col);
             }
             return;
         }
@@ -71,13 +65,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         
         // Check for same color pieces -> switch piece selection
         if(board[row][col] && getPieceColor(board[row][col]) == getPieceColor(board[prevRow][prevCol])){
-            setSelectedSquare({row,col});
-            const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
-            const safeAndValidMoves = validMoves.filter((validMove)=>{
-                return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
-            });
-            const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
-            setValidMoves(moveSet);
+            selectPiece(row, col);
             return;
         }
         
@@ -88,6 +76,16 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         movePiece(prevRow, prevCol, row, col);
 
         setTurn(turn==selfPieceColor?opponentPieceColor:selfPieceColor);
+    }
+
+    function selectPiece(row, col){
+        setSelectedSquare({row,col});
+        const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
+        const safeAndValidMoves = validMoves.filter((validMove)=>{
+            return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
+        });
+        const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
+        setValidMoves(moveSet);
     }
 
     function movePiece(fromRow, fromCol, toRow, toCol) {
