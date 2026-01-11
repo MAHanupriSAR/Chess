@@ -99,11 +99,47 @@ export function isCheck(board, kingColor, selfPieceColor) {
 // --- OPTIMIZATION 2: Make/Unmake (Zero Memory Allocation) ---
 // Standard engines don't "copy" the board (which is slow). 
 // They make the move on the real board, check safety, and then undo it immediately.
+
+// export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, selfPieceColor) {
+//     const movingPiece = board[fromRow][fromCol];
+//     const capturedPiece = board[toRow][toCol]; // Save what was there (if any)
+
+//     // 1. MAKE Move (Modify board in-place)
+//     board[toRow][toCol] = movingPiece;
+//     board[fromRow][fromCol] = null;
+
+//     // 2. CHECK Safety
+//     // We pass the SAME board object, which is now temporarily updated.
+//     const safe = !isCheck(board, turnColor, selfPieceColor);
+
+//     // 3. UNMAKE Move (Restore board exactly as it was)
+//     board[fromRow][fromCol] = movingPiece;
+//     board[toRow][toCol] = capturedPiece;
+
+//     return safe;
+// }
+
 export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, selfPieceColor) {
     const movingPiece = board[fromRow][fromCol];
-    const capturedPiece = board[toRow][toCol]; // Save what was there (if any)
+    const capturedPiece = board[toRow][toCol];
 
-    // 1. MAKE Move (Modify board in-place)
+    const isCastling = movingPiece.toLowerCase() === 'k' && Math.abs(toCol - fromCol) === 2;
+    
+    let rookRow, rookCol, rookTargetCol, rookPiece;
+
+    if (isCastling) {
+        rookRow = fromRow;
+        const isKingSide = toCol > fromCol;
+        rookCol = isKingSide ? 7 : 0;
+        rookTargetCol = isKingSide ? 5 : 3;
+        rookPiece = board[rookRow][rookCol];
+
+        // 1a. MOVE ROOK (Simulate)
+        board[rookRow][rookTargetCol] = rookPiece;
+        board[rookRow][rookCol] = null;
+    }
+
+    // 1b. MOVE KING/PIECE (Modify board in-place)
     board[toRow][toCol] = movingPiece;
     board[fromRow][fromCol] = null;
 
@@ -114,6 +150,12 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, sel
     // 3. UNMAKE Move (Restore board exactly as it was)
     board[fromRow][fromCol] = movingPiece;
     board[toRow][toCol] = capturedPiece;
+
+    // 3a. UNMAKE ROOK (Restore)
+    if (isCastling) {
+        board[rookRow][rookCol] = rookPiece;
+        board[rookRow][rookTargetCol] = null;
+    }
 
     return safe;
 }

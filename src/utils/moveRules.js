@@ -105,11 +105,11 @@ export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, 
             return false;
         }
 
-        if(type === 'k' && Math.abs(move.col-col)===2){
+        if(type === 'k' && Math.abs(move.col-pieceCol)===2){
             if(isCheck(board, pieceColor, selfPieceColor)){
                 return false;
             }
-            const transitCol = (col + move.col)/2;
+            const transitCol = (pieceCol + move.col)/2;
             if(!isMoveSafe(board, pieceRow, pieceCol, pieceRow, transitCol, pieceColor, selfPieceColor)){
                 return false;
             }

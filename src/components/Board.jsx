@@ -33,7 +33,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     useEffect(()=>{
         if(vsComputer && turn === opponentPieceColor && !gameStatus){
             const timer = setTimeout(() => {
-                const move = getComputerMove(board, opponentPieceColor);
+                const move = getComputerMove(board, opponentPieceColor, selfPieceColor, castlingRights);
                 if (move) {
                     performMove(move.fromRow, move.fromCol, move.toRow, move.toCol)
                 }
@@ -82,7 +82,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     }
 
     function deselectPiece(){
-        etSelectedSquare(null);
+        setSelectedSquare(null);
         setValidMoves(new Set());
     }
 
@@ -94,7 +94,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         setCastlingRights(newRights);
         setBoard(newBoard);
         setTurn(turn === "white" ? "black" : "white");
-        deselect();
+        deselectPiece();
 
         new Audio(isCapture ? captureSoundFile : moveSoundFile).play();
     }

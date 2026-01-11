@@ -1,7 +1,7 @@
 import {getValidMoves} from "../utils/moveRules";
 import {getPieceColor} from "../utils/helperFunctions";
 
-export function getComputerMove(board, computerColor) {
+export function getComputerMove(board, computerColor, selfPieceColor, castlingRights) {
     let allSafeMoves = [];
 
     for (let row = 0; row < 8; row++) {
@@ -10,7 +10,7 @@ export function getComputerMove(board, computerColor) {
             
             if (piece && getPieceColor(piece) === computerColor) {
                 
-                const validMoves = getValidMoves(piece, row, col, board);
+                const validMoves = getValidMoves(piece, row, col, board, selfPieceColor, castlingRights);
 
                 validMoves.forEach(move => {
                     allSafeMoves.push({
