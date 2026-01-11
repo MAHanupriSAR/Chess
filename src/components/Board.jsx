@@ -1,4 +1,5 @@
 import Square from './Square';
+import Piece from './Piece';
 import './Board.css';
 import { useEffect, useState } from 'react';
 
@@ -21,6 +22,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [validMoves, setValidMoves] = useState(new Set());
     const [gameStatus, setGameStatus] = useState(null);
+    const [promotionMove, setPromotionMove] = useState(null);
 
     useEffect(()=>{
         const result = isGameOver(board, turn);
@@ -35,7 +37,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             const timer = setTimeout(() => {
                 const move = getComputerMove(board, opponentPieceColor, selfPieceColor, castlingRights);
                 if (move) {
-                    performMove(move.fromRow, move.fromCol, move.toRow, move.toCol)
+                    performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, move.promoteTo);
                 }
             }, 50);
             return () => clearTimeout(timer);
@@ -71,6 +73,15 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             return;
         }
 
+        const movingPiece = board[prevRow][prevCol];
+        const movingPieceColor = getPieceColor(movingPiece);
+        const isPawn = movingPiece.toLowerCase() === 'p';
+        const isPromotionRow = row===0 || row===7;
+        if(isPawn && isPromotionRow){
+            setPromotionMove({fromRow: prevRow, fromCol: prevCol, toRow: row, toCol: col, doneBy: movingPieceColor});
+            return;
+        }
+
         performMove(prevRow, prevCol, row, col);
     }
 
@@ -86,10 +97,10 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         setValidMoves(new Set());
     }
 
-    function performMove(fromRow, fromCol, toRow, toCol){
+    function performMove(fromRow, fromCol, toRow, toCol, promotionChoice=null){
         const isCapture = board[toRow][toCol] !== null;
         const newRights = updateCastlingRights(castlingRights, fromRow, fromCol, toRow, toCol, board);
-        const newBoard = executeMove(board, fromRow, fromCol, toRow, toCol);
+        const newBoard = executeMove(board, fromRow, fromCol, toRow, toCol, promotionChoice);
 
         setCastlingRights(newRights);
         setBoard(newBoard);
@@ -97,6 +108,13 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         deselectPiece();
 
         new Audio(isCapture ? captureSoundFile : moveSoundFile).play();
+    }
+
+    function handlePromotionSelection(promotionChoice){
+        if(!promotionMove) return;
+        const {fromRow, fromCol, toRow, toCol} = promotionMove;
+        performMove(fromRow, fromCol, toRow, toCol, promotionChoice);
+        setPromotionMove(null);
     }
 
     const boardSquares = [];
@@ -151,6 +169,17 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         <div className="board-container">
             <div className="board">
                 {boardSquares}
+                {promotionMove && (
+                    <div className="promotion-modal">
+                        <div className="promotion-options">
+                            {['q', 'r', 'b', 'n'].map((p) => (
+                                <div key={p} className="promotion-option" onClick={() => handlePromotionSelection(p)}>
+                                    <Piece piece={promotionMove.doneBy === 'white' ? p.toUpperCase() : p} />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
             <button className="exit-btn" onClick={onReset}>
                 {/* <i className="fa-jelly fa-solid fa-arrow-left"></i> */}

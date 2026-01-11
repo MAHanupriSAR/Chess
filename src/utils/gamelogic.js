@@ -33,13 +33,20 @@ export const initialCastlingRights = {
     blackQueenSide: true
 };
 
-export function executeMove(currentBoard, fromRow, fromCol, toRow, toCol) {
+export function executeMove(currentBoard, fromRow, fromCol, toRow, toCol, promotionChoice=null) {
     const newBoard = currentBoard.map(r => [...r]);
     const piece = newBoard[fromRow][fromCol];
     const pieceType = piece.toLowerCase();
 
     // 1. Move the Piece
-    newBoard[toRow][toCol] = piece;
+    if(pieceType === 'p' && (toRow===7 || toRow===0)){
+        const isWhite = piece==='P';
+        if(promotionChoice){
+            newBoard[toRow][toCol] = isWhite ? promotionChoice.toUpperCase() : promotionChoice.toLowerCase();
+        }
+        else newBoard[toRow][toCol] = isWhite ? 'Q' : 'q';
+    }
+    else newBoard[toRow][toCol] = piece;
     newBoard[fromRow][fromCol] = null;
 
     // 2. Handle Castling (Move the Rook)

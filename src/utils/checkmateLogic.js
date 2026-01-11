@@ -111,7 +111,7 @@ export function isCheck(board, kingColor, selfPieceColor) {
 //     // 2. CHECK Safety
 //     // We pass the SAME board object, which is now temporarily updated.
 //     const safe = !isCheck(board, turnColor, selfPieceColor);
-
+     
 //     // 3. UNMAKE Move (Restore board exactly as it was)
 //     board[fromRow][fromCol] = movingPiece;
 //     board[toRow][toCol] = capturedPiece;
