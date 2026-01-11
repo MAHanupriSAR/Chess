@@ -1,6 +1,7 @@
-import getPieceColor from "./getPieceColor";
+import { isCheck, isMoveSafe } from "./checkmateLogic";
+import {getPieceColor} from "./helperFunctions";
 
-export default function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor){
+export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, castlingRights = null){
     const type = piece.toLowerCase();
     const pieceColor = getPieceColor(piece);
     const pieceIsSelfPiece = pieceColor === selfPieceColor;
@@ -84,8 +85,36 @@ export default function getValidMoves(piece, pieceRow, pieceCol, board, selfPiec
     if (type === 'k') {
         const dirs = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
         dirs.forEach(([dr, dc]) => checkAndAdd(pieceRow + dr, pieceCol + dc));
+
+        if(castlingRights){
+            if(castlingRights[`${pieceColor}KingSide`]){
+                if(!board[pieceRow][5] && !board[pieceRow][6]){
+                    moves.push({ row: pieceRow, col: 6 });
+                }
+            }
+            if(castlingRights[`${pieceColor}QueenSide`]){
+                if(!board[pieceRow][1] && !board[pieceRow][2] && !board[pieceRow][3]){
+                    moves.push({ row: pieceRow, col: 2 });
+                }
+            }
+        }
     }
+    
+    return moves.filter((move)=>{
+        if(!isMoveSafe(board, pieceRow, pieceCol, move.row, move.col, pieceColor, selfPieceColor)){
+            return false;
+        }
 
+        if(type === 'k' && Math.abs(move.col-col)===2){
+            if(isCheck(board, pieceColor, selfPieceColor)){
+                return false;
+            }
+            const transitCol = (col + move.col)/2;
+            if(!isMoveSafe(board, pieceRow, pieceCol, pieceRow, transitCol, pieceColor, selfPieceColor)){
+                return false;
+            }
+        }
 
-    return moves;
+        return true;
+    })
 }

@@ -1,5 +1,4 @@
-import getPieceColor from "./getPieceColor";
-import getValidMoves from "./moveRules"; 
+import {getPieceColor} from "./helperFunctions";
 
 export function isCheck(board, kingColor, selfPieceColor) {
     let kingRow, kingCol;
@@ -117,34 +116,4 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, sel
     board[toRow][toCol] = capturedPiece;
 
     return safe;
-}
-
-export function isGameOver(board,turnColor,selfPieceColor){
-    let hasLegalMove = false;
-
-    for(let row = 0; row<8; row++){
-        for(let col = 0; col<8; col++){
-            const piece = board[row][col];
-            if(!piece) continue;
-            if(getPieceColor(piece) !== turnColor) continue;
-            const moves = getValidMoves(piece, row, col, board, selfPieceColor);
-            for(let move of moves){
-                if(isMoveSafe(board, row, col, move.row, move.col,turnColor,selfPieceColor)){
-                    hasLegalMove = true;
-                    break;
-                }
-            }
-            if(hasLegalMove) break;
-        }
-        if(hasLegalMove) break;
-    }
-
-    if(hasLegalMove) return null;
-
-    if(isCheck(board, turnColor)){
-        return "checkmate";
-    }
-    else{
-        return "stalemate";
-    }
 }

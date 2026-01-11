@@ -1,6 +1,5 @@
-import getValidMoves from "../utils/moveRules";
-import { isMoveSafe } from "../utils/checkmateLogic";
-import getPieceColor from "../utils/getPieceColor";
+import {getValidMoves} from "../utils/moveRules";
+import {getPieceColor} from "../utils/helperFunctions";
 
 export function getComputerMove(board, computerColor) {
     let allSafeMoves = [];
@@ -13,11 +12,7 @@ export function getComputerMove(board, computerColor) {
                 
                 const validMoves = getValidMoves(piece, row, col, board);
 
-                const safeMoves = validMoves.filter(move => 
-                    isMoveSafe(board, row, col, move.row, move.col, computerColor)
-                );
-
-                safeMoves.forEach(move => {
+                validMoves.forEach(move => {
                     allSafeMoves.push({
                         fromRow: row,
                         fromCol: col,

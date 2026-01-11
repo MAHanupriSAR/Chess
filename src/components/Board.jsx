@@ -1,11 +1,10 @@
 import Square from './Square';
-import fenToBoard from '../utils/fenOperations';
-
 import './Board.css';
 import { useEffect, useState } from 'react';
-import getPieceColor from '../utils/getPieceColor';
-import getValidMoves from '../utils/moveRules';
-import { isMoveSafe, isGameOver } from '../utils/checkmateLogic';
+
+import {fenToBoard, getPieceColor} from '../utils/helperFunctions';
+import {getValidMoves} from '../utils/moveRules';
+import { executeMove, updateCastlingRights, initialCastlingRights, isGameOver } from '../utils/gamelogic';
 import { getComputerMove } from '../engine/chessEngine';
 
 import moveSoundFile from '../assets/sounds/move_self.mp3';
@@ -14,8 +13,11 @@ import captureSoundFile from '../assets/sounds/capture.mp3'
 export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     const selfPieceColor = playerColor;
     const opponentPieceColor = selfPieceColor==="white" ? "black" : "white";
+
     const [turn, setTurn] = useState(selfPieceColor);
     const [board, setBoard] = useState(() => fenToBoard(fenString));
+    const [castlingRights, setCastlingRights] = useState(initialCastlingRights);
+
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [validMoves, setValidMoves] = useState(new Set());
     const [gameStatus, setGameStatus] = useState(null);
@@ -32,13 +34,10 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         if(vsComputer && turn === opponentPieceColor && !gameStatus){
             const timer = setTimeout(() => {
                 const move = getComputerMove(board, opponentPieceColor);
-                
                 if (move) {
-                    movePiece(move.fromRow, move.fromCol, move.toRow, move.toCol);
-                    setTurn(selfPieceColor);
+                    performMove(move.fromRow, move.fromCol, move.toRow, move.toCol)
                 }
             }, 50);
-
             return () => clearTimeout(timer);
         }
     }, [turn, board, gameStatus])
@@ -58,8 +57,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         const { row: prevRow, col: prevCol } = selectedSquare;
 
         if (prevRow === row && prevCol === col) {
-            setSelectedSquare(null);
-            setValidMoves(new Set());
+            deselectPiece();
             return;
         }
         
@@ -73,39 +71,32 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             return;
         }
 
-        movePiece(prevRow, prevCol, row, col);
-
-        setTurn(turn==selfPieceColor?opponentPieceColor:selfPieceColor);
+        performMove(prevRow, prevCol, row, col);
     }
 
     function selectPiece(row, col){
         setSelectedSquare({row,col});
-        const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor);
-        const safeAndValidMoves = validMoves.filter((validMove)=>{
-            return isMoveSafe(board, row, col, validMove.row, validMove.col, turn, selfPieceColor);
-        });
-        const moveSet = new Set(safeAndValidMoves.map(m => `${m.row},${m.col}`));
+        const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor, castlingRights);
+        const moveSet = new Set(validMoves.map(m => `${m.row},${m.col}`));
         setValidMoves(moveSet);
     }
 
-    function movePiece(fromRow, fromCol, toRow, toCol) {
-        const newBoard = board.map(r => [...r]);
-
-        const isCapture = newBoard[toRow][toCol] !== null;
-
-        newBoard[toRow][toCol] = newBoard[fromRow][fromCol];
-        newBoard[fromRow][fromCol] = null;
-
-        setBoard(newBoard);
-        setSelectedSquare(null);
+    function deselectPiece(){
+        etSelectedSquare(null);
         setValidMoves(new Set());
+    }
 
-        if(!isCapture){ 
-            new Audio(moveSoundFile).play();
-        }
-        else{
-            new Audio(captureSoundFile).play();
-        }
+    function performMove(fromRow, fromCol, toRow, toCol){
+        const isCapture = board[toRow][toCol] !== null;
+        const newRights = updateCastlingRights(castlingRights, fromRow, fromCol, toRow, toCol, board);
+        const newBoard = executeMove(board, fromRow, fromCol, toRow, toCol);
+
+        setCastlingRights(newRights);
+        setBoard(newBoard);
+        setTurn(turn === "white" ? "black" : "white");
+        deselect();
+
+        new Audio(isCapture ? captureSoundFile : moveSoundFile).play();
     }
 
     const boardSquares = [];

@@ -1,4 +1,4 @@
-export default function fenToBoard(fenString) {
+export function fenToBoard(fenString) {
     const [piecePlacement] = fenString.split(" ");
     
     const board = []; 
@@ -23,4 +23,9 @@ export default function fenToBoard(fenString) {
     board.push(currentRow);
 
     return board;
+}
+
+export function getPieceColor(piece){
+    const isLowerCase = str => str === str.toLowerCase();
+    return isLowerCase(piece)? "black" : "white";
 }
