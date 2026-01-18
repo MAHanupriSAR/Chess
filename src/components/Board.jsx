@@ -18,6 +18,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     const [turn, setTurn] = useState(selfPieceColor);
     const [board, setBoard] = useState(() => fenToBoard(fenString));
     const [castlingRights, setCastlingRights] = useState(initialCastlingRights);
+    const [enPassantTarget, setEnPassantTarget] = useState(null);
 
     const [selectedSquare, setSelectedSquare] = useState(null);
     const [validMoves, setValidMoves] = useState(new Set());
@@ -87,7 +88,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
 
     function selectPiece(row, col){
         setSelectedSquare({row,col});
-        const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor, castlingRights);
+        const validMoves = getValidMoves(board[row][col], row, col, board, selfPieceColor, castlingRights, enPassantTarget);
         const moveSet = new Set(validMoves.map(m => `${m.row},${m.col}`));
         setValidMoves(moveSet);
     }
@@ -98,11 +99,23 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     }
 
     function performMove(fromRow, fromCol, toRow, toCol, promotionChoice=null){
-        const isCapture = board[toRow][toCol] !== null;
+        const piece = board[fromRow][fromCol];
+        const pieceType = piece.toLowerCase();
+
+        const isNormalCapture = board[toRow][toCol]!==null;
+        const isEnPassantCapture = pieceType==='p' && enPassantTarget && toRow === enPassantTarget.row && toCol === enPassantTarget.col;
+        const isCapture = isNormalCapture || isEnPassantCapture;
+
+        let newEnPassantTarget = null;
+        if (pieceType === 'p' && Math.abs(toRow - fromRow) === 2) {
+            newEnPassantTarget = { row: (fromRow + toRow) / 2, col: fromCol };
+        }
+
         const newRights = updateCastlingRights(castlingRights, fromRow, fromCol, toRow, toCol, board);
-        const newBoard = executeMove(board, fromRow, fromCol, toRow, toCol, promotionChoice);
+        const newBoard = executeMove(board, fromRow, fromCol, toRow, toCol, promotionChoice, enPassantTarget);
 
         setCastlingRights(newRights);
+        setEnPassantTarget(newEnPassantTarget);
         setBoard(newBoard);
         setTurn(turn === "white" ? "black" : "white");
         deselectPiece();
@@ -131,7 +144,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             const isHint = validMoves.has(`${row},${col}`);
 
             //case3 this square contains a piece and can be captured
-            const isCapture = isHint && piece !== null;
+            const isCapture = isHint && (piece !== null || (enPassantTarget && row === enPassantTarget.row && col === enPassantTarget.col));
 
             //a sqaure will be interactive only when it satisfies following:
             //color of piece in square = turn

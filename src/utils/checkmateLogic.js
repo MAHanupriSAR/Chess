@@ -119,13 +119,15 @@ export function isCheck(board, kingColor, selfPieceColor) {
 //     return safe;
 // }
 
-export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, selfPieceColor) {
+export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, selfPieceColor, enPassantTarget) {
     const movingPiece = board[fromRow][fromCol];
     const capturedPiece = board[toRow][toCol];
 
     const isCastling = movingPiece.toLowerCase() === 'k' && Math.abs(toCol - fromCol) === 2;
+    const isEnPassant = movingPiece.toLowerCase() === 'p' && enPassantTarget && toRow === enPassantTarget.row && toCol === enPassantTarget.col;
     
     let rookRow, rookCol, rookTargetCol, rookPiece;
+    let epCapturedRow, epCapturedCol, epCapturedPiece;
 
     if (isCastling) {
         rookRow = fromRow;
@@ -137,6 +139,13 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, sel
         // 1a. MOVE ROOK (Simulate)
         board[rookRow][rookTargetCol] = rookPiece;
         board[rookRow][rookCol] = null;
+    }
+
+    if (isEnPassant) {
+        epCapturedRow = fromRow; // The pawn is on the same row as the starting position
+        epCapturedCol = toCol;   // The column we moved to
+        epCapturedPiece = board[epCapturedRow][epCapturedCol];
+        board[epCapturedRow][epCapturedCol] = null;
     }
 
     // 1b. MOVE KING/PIECE (Modify board in-place)
@@ -155,6 +164,9 @@ export function isMoveSafe(board, fromRow, fromCol, toRow, toCol, turnColor, sel
     if (isCastling) {
         board[rookRow][rookCol] = rookPiece;
         board[rookRow][rookTargetCol] = null;
+    }
+    if (isEnPassant) {
+        board[epCapturedRow][epCapturedCol] = epCapturedPiece;
     }
 
     return safe;

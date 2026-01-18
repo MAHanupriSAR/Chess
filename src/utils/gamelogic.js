@@ -33,7 +33,7 @@ export const initialCastlingRights = {
     blackQueenSide: true
 };
 
-export function executeMove(currentBoard, fromRow, fromCol, toRow, toCol, promotionChoice=null) {
+export function executeMove(currentBoard, fromRow, fromCol, toRow, toCol, promotionChoice=null, enPassantTarget = null) {
     const newBoard = currentBoard.map(r => [...r]);
     const piece = newBoard[fromRow][fromCol];
     const pieceType = piece.toLowerCase();
@@ -48,6 +48,12 @@ export function executeMove(currentBoard, fromRow, fromCol, toRow, toCol, promot
     }
     else newBoard[toRow][toCol] = piece;
     newBoard[fromRow][fromCol] = null;
+
+    //2. enpassant capture
+    if (pieceType === 'p' && enPassantTarget && toRow === enPassantTarget.row && toCol === enPassantTarget.col) {
+        // The captured pawn is on the same row as the start position (fromRow), and the column of the target (toCol)
+        newBoard[fromRow][toCol] = null;
+    }
 
     // 2. Handle Castling (Move the Rook)
     if (pieceType === 'k' && Math.abs(toCol - fromCol) === 2) {

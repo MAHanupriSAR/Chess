@@ -1,7 +1,7 @@
 import { isCheck, isMoveSafe } from "./checkmateLogic";
 import {getPieceColor} from "./helperFunctions";
 
-export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, castlingRights = null){
+export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, castlingRights = null, enPassantTarget = null){
     const type = piece.toLowerCase();
     const pieceColor = getPieceColor(piece);
     const pieceIsSelfPiece = pieceColor === selfPieceColor;
@@ -41,7 +41,7 @@ export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, 
             }
         }
         
-        //capture
+        //normal capture
         [[dir,1],[dir,-1]].forEach(([dr, dc])=>{
             const targetRow = pieceRow + dr;
             const targetCol = pieceCol + dc;
@@ -50,6 +50,12 @@ export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, 
                 const targetPieceColor = getPieceColor(targetPiece);
                 if(targetPieceColor != pieceColor){
                     moves.push({row:targetRow, col:targetCol});
+                }
+            }
+            // enpassant capture
+            if(enPassantTarget){
+                if (targetRow === enPassantTarget.row && targetCol === enPassantTarget.col) {
+                    moves.push({ row: targetRow, col: targetCol });
                 }
             }
         })
@@ -101,7 +107,7 @@ export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, 
     }
     
     return moves.filter((move)=>{
-        if(!isMoveSafe(board, pieceRow, pieceCol, move.row, move.col, pieceColor, selfPieceColor)){
+        if(!isMoveSafe(board, pieceRow, pieceCol, move.row, move.col, pieceColor, selfPieceColor, enPassantTarget)){
             return false;
         }
 
@@ -110,7 +116,7 @@ export function getValidMoves(piece, pieceRow, pieceCol, board, selfPieceColor, 
                 return false;
             }
             const transitCol = (pieceCol + move.col)/2;
-            if(!isMoveSafe(board, pieceRow, pieceCol, pieceRow, transitCol, pieceColor, selfPieceColor)){
+            if(!isMoveSafe(board, pieceRow, pieceCol, pieceRow, transitCol, pieceColor, selfPieceColor, enPassantTarget)){
                 return false;
             }
         }
