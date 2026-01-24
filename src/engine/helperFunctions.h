@@ -1,7 +1,8 @@
 #ifndef HELPER_FUNCTIONS_H // Header Guard: prevents double inclusion
 #define HELPER_FUNCTIONS_H
 
-#include <bits/stdc++.h>
+#include <cstdint>
+#include <iostream>
 using namespace std;
 
 void setBit(uint64_t &value, int bit) {

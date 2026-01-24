@@ -2,9 +2,12 @@
 #define ENGINE_H
 
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 #include <string>
-#include <bitBoard.h>
+#include <algorithm> // for max, min used in minimax
+#include <cstdint>
+#include "bitBoard.h"
 
 const int pawnTable[64] = {
      0,  0,  0,  0,  0,  0,  0,  0,

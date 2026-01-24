@@ -2,7 +2,13 @@
 #define BIT_BOARD_H
 
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cctype>  // for isdigit, isupper, tolower
+#include <cmath>   // for abs
+#include <cstdint> // for uint64_t
+#include <algorithm> // just in case
 #include "helperFunctions.h"
 
 using namespace std;

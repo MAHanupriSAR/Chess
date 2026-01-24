@@ -38,7 +38,8 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
             const timer = setTimeout(() => {
                 const move = getComputerMove(board, selfPieceColor, castlingRights, enPassantTarget);
                 if (move) {
-                    performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, move.promoteTo);
+                    const promotion = (move.promoteTo === "None") ? null : move.promoteTo;
+                    performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, promotion);
                 }
             }, 50);
             return () => clearTimeout(timer);

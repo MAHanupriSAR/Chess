@@ -16,13 +16,22 @@ extern "C" {
 
         Move best = getBestMove(fenString, colorString, castling, enPassant);
 
-        result = to_string(best.getFromRow()) + " " +
+        string moveString = to_string(best.getFromRow()) + " " +
                  to_string(best.getFromCol()) + " " +
                  to_string(best.getToRow())   + " " +
-                 to_string(best.getToCol())   + " " +
-                 to_string(best.getPromo());
+                 to_string(best.getToCol())   + " " ;
 
-        // .c_str() returns the raw pointer to the string's internal text
+        int p = best.getPromo();    
+
+        if (p == 1) moveString += "r";      // Rook
+        else if (p == 2) moveString += "n"; // Knight
+        else if (p == 3) moveString += "b"; // Bishop
+        else if (p == 4) moveString += "q"; // Queen
+        else moveString += "None";          // No promotion
+
+        result = moveString;
+
+        //return pointer to internal string
         return result.c_str();
     }
 }

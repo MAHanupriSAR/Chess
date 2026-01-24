@@ -1,5 +1,5 @@
 import { boardToFen } from "./helperFunctions";
-import Module from "./engine.js";
+import Module from "../engine/engine";
 
 function getCastlingMask(castlingRights) {
     let mask = 0;
@@ -23,18 +23,18 @@ export const getComputerMove = async (board, color, castling, enPassant) => {
         "getComputerMoveWrapper", 
         "string", 
         ["string", "string", "number", "number"], 
-        [boardToFen(board), color, castling, enPassant]
+        [boardToFen(board), color, getCastlingMask(castling), getEnPassantSquare(enPassant)]
     );
 
     console.log("Raw C++ Output:", rawString);
 
-    const parts = rawString.split(' ').map(Number); 
+    const parts = rawString.split(' ');
 
     return {
-        fromRow: parts[0],
-        fromCol: parts[1],
-        toRow:   parts[2],
-        toCol:   parts[3],
-        promotion: parts[4]
+        fromRow: parseInt(parts[0]),
+        fromCol: parseInt(parts[1]),
+        toRow:   parseInt(parts[2]),
+        toCol:   parseInt(parts[3]),
+        promoteTo: parts[4] // This will now be "q", "r", "n", "b", or "None"
     };
 };
