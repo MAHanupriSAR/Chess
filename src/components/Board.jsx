@@ -26,10 +26,13 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     const [promotionMove, setPromotionMove] = useState(null);
 
     useEffect(()=>{
-        const result = isGameOver(board, turn);
+        const result = isGameOver(board, turn, selfPieceColor, castlingRights, enPassantTarget);
         if(result){
             setGameStatus(result);
-            alert(`Game Over: ${result.toUpperCase()}!`);
+            // alert(`Game Over: ${result.toUpperCase()}!`);
+            setTimeout(() => {
+                 alert(`Game Over: ${result.toUpperCase()}!`);
+            }, 100);
         }
     },[board, turn]);
 

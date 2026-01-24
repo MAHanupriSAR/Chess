@@ -1,7 +1,7 @@
 import {getPieceColor} from "./helperFunctions";
 import {getValidMoves} from "./moveRules";
 
-export function isGameOver(board,turnColor,selfPieceColor){
+export function isGameOver(board,turnColor,selfPieceColor,castlingRights, enPassantTarget){
     let hasLegalMove = false;
 
     for(let row = 0; row<8; row++){
@@ -9,16 +9,20 @@ export function isGameOver(board,turnColor,selfPieceColor){
             const piece = board[row][col];
             if(!piece) continue;
             if(getPieceColor(piece) !== turnColor) continue;
-            const moves = getValidMoves(piece, row, col, board, selfPieceColor);
-            if(moves) hasLegalMove = true;
-            if(hasLegalMove) break;
+            const moves = getValidMoves(piece, row, col, board, selfPieceColor, castlingRights, enPassantTarget);
+            // if(moves) hasLegalMove = true;
+            // if(hasLegalMove) break;
+            if(moves.length > 0) {
+                hasLegalMove = true;
+                break;
+            }
         }
         if(hasLegalMove) break;
     }
 
     if(hasLegalMove) return null;
 
-    if(isCheck(board, turnColor)){
+    if(isCheck(board, turnColor, selfPieceColor)){
         return "checkmate";
     }
     else{

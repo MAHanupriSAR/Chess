@@ -9,12 +9,12 @@ extern "C" {
     static string result;
 
     EMSCRIPTEN_KEEPALIVE
-    const char* getComputerMoveWrapper(const char* fen, const char* color, int castling, int enPassant) {
+    const char* getComputerMoveWrapper(const char* fen, const char* color, int castling, int enPassant, int depth) {
         
         string fenString(fen);
         string colorString(color);
 
-        Move best = getBestMove(fenString, colorString, castling, enPassant);
+        Move best = getBestMove(fenString, colorString, castling, enPassant, depth);
 
         string moveString = to_string(best.getFromRow()) + " " +
                  to_string(best.getFromCol()) + " " +

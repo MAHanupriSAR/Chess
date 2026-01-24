@@ -25,8 +25,8 @@ export const getComputerMove = async (board, color, castling, enPassant) => {
     const rawString = wasm.ccall(
         "getComputerMoveWrapper", 
         "string", 
-        ["string", "string", "number", "number"], 
-        [boardToFen(board), color, getCastlingMask(castling), getEnPassantSquare(enPassant)]
+        ["string", "string", "number", "number", "number"], 
+        [boardToFen(board), color, getCastlingMask(castling), getEnPassantSquare(enPassant), 5]
     );
 
     console.log("Raw C++ Output:", rawString);
