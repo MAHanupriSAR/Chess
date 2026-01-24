@@ -30,3 +30,7 @@
 .capture_hint{
     background-image: radial-gradient(circle, transparent 50%, rgba(200, 0, 0, 0.4) 55%);
 }
+
+.check {
+    background-color: rgb(233, 76, 76) !important; /* Red color */
+}

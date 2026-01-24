@@ -1,5 +1,6 @@
 import {getPieceColor} from "./helperFunctions";
 import {getValidMoves} from "./moveRules";
+import { isCheck } from "./checkmateLogic";
 
 export function isGameOver(board,turnColor,selfPieceColor,castlingRights, enPassantTarget){
     let hasLegalMove = false;

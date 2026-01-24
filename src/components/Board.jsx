@@ -7,6 +7,7 @@ import {fenToBoard, getPieceColor} from '../utils/helperFunctions';
 import {getValidMoves} from '../utils/moveRules';
 import { executeMove, updateCastlingRights, initialCastlingRights, isGameOver } from '../utils/gamelogic';
 import { getComputerMove } from '../utils/engineWorker';
+import { isCheck } from '../utils/checkmateLogic';
 
 import moveSoundFile from '../assets/sounds/move_self.mp3';
 import captureSoundFile from '../assets/sounds/capture.mp3'
@@ -40,7 +41,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         if(vsComputer && turn === opponentPieceColor && !gameStatus){
             const timer = setTimeout(async () => {
                 const move = await getComputerMove(board, selfPieceColor, castlingRights, enPassantTarget);
-                if (move) {
+                if (move && move.fromRow !== -1) {
                     const promotion = (move.promoteTo === "None") ? null : move.promoteTo;
                     performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, promotion);
                 }
@@ -134,6 +135,22 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
         setPromotionMove(null);
     }
 
+    // to highlight check king  in red
+    const isKingInCheck = isCheck(board, turn, selfPieceColor);
+    let kingSquare = null;
+    if (isKingInCheck) {
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const p = board[r][c];
+                if (p && p.toLowerCase() === 'k' && getPieceColor(p) === turn) {
+                    kingSquare = { row: r, col: c };
+                    break;
+                }
+            }
+            if (kingSquare) break;
+        }
+    }
+
     const boardSquares = [];
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
@@ -162,6 +179,8 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                 isInteractive = (piece && getPieceColor(piece)===turn) ||isHint || isCapture
             }
 
+            const isCheckSquare = kingSquare && kingSquare.row === row && kingSquare.col === col;
+
             boardSquares.push(
                 <Square 
                     key={index} 
@@ -172,6 +191,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
                     isValidMove = {isHint}
                     isCapture = {isCapture}
                     isInteractive={isInteractive}
+                    isCheck={isCheckSquare}
                     handleClick={() => handleSquareClick(row, col)}
                 />
             );
