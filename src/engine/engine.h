@@ -218,7 +218,7 @@ Move searchBestMove(BitBoard bitBoard, int depth){
 }
 
 Move getBestMove(string fenString, string selfPieceColor, int castlingRights, int enPassantTarget){
-    BitBoard bitBoard(fenString, selfPieceColor, 0, castlingRights, enPassantTarget);
+    BitBoard bitBoard(fenString, selfPieceColor, 1, castlingRights, enPassantTarget);
     return searchBestMove(bitBoard, 5); 
 }
 

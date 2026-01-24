@@ -13,6 +13,9 @@ function getCastlingMask(castlingRights) {
 }
 
 function getEnPassantSquare(enPassantTarget){
+    if (!enPassantTarget) {
+        return -1; 
+    }
     return enPassantTarget.row*8 + enPassantTarget.col;
 }
 

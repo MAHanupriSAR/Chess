@@ -53,6 +53,8 @@ export function boardToFen(board) {
             fen += "/";
         }
     }
+
+    return fen;
 }
 
 export function getPieceColor(piece){

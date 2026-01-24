@@ -35,8 +35,8 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
 
     useEffect(()=>{
         if(vsComputer && turn === opponentPieceColor && !gameStatus){
-            const timer = setTimeout(() => {
-                const move = getComputerMove(board, selfPieceColor, castlingRights, enPassantTarget);
+            const timer = setTimeout(async () => {
+                const move = await getComputerMove(board, selfPieceColor, castlingRights, enPassantTarget);
                 if (move) {
                     const promotion = (move.promoteTo === "None") ? null : move.promoteTo;
                     performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, promotion);
