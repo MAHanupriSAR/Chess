@@ -1,3 +1,7 @@
+#ifndef ENGINE_H // Header Guard: prevents double inclusion
+#define ENGINE_H
+
+
 #include <bits/stdc++.h>
 #include <string>
 #include <bitBoard.h>
@@ -214,3 +218,5 @@ Move getBestMove(string fenString, string selfPieceColor, int castlingRights, in
     BitBoard bitBoard(fenString, selfPieceColor, 0, castlingRights, enPassantTarget);
     return searchBestMove(bitBoard, 5); 
 }
+
+#endif

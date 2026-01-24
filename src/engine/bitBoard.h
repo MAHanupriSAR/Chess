@@ -367,7 +367,7 @@ public:
                 }
             }
         }
-        // SLIDING PIECES 
+        // --- SLIDING PIECES ---
         else {
             int dr[] = {-1, -1, 1, 1, -1, 1, 0, 0}; 
             int dc[] = {-1, 1, -1, 1, 0, 0, -1, 1};
@@ -499,7 +499,6 @@ public:
                     move.getPromo());
     }
 };
-
 
 
 #endif
