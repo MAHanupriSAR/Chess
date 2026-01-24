@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import {fenToBoard, getPieceColor} from '../utils/helperFunctions';
 import {getValidMoves} from '../utils/moveRules';
 import { executeMove, updateCastlingRights, initialCastlingRights, isGameOver } from '../utils/gamelogic';
-import { getComputerMove } from '../engine/chessEngine';
+import { getComputerMove } from '../utils/engineWorker';
 
 import moveSoundFile from '../assets/sounds/move_self.mp3';
 import captureSoundFile from '../assets/sounds/capture.mp3'
@@ -36,7 +36,7 @@ export default function Board({ fenString, vsComputer, playerColor, onReset }) {
     useEffect(()=>{
         if(vsComputer && turn === opponentPieceColor && !gameStatus){
             const timer = setTimeout(() => {
-                const move = getComputerMove(board, opponentPieceColor, selfPieceColor, castlingRights);
+                const move = getComputerMove(board, selfPieceColor, castlingRights, enPassantTarget);
                 if (move) {
                     performMove(move.fromRow, move.fromCol, move.toRow, move.toCol, move.promoteTo);
                 }

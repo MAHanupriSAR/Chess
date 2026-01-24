@@ -1,3 +1,7 @@
+#ifndef BIT_BOARD_H // Header Guard: prevents double inclusion
+#define BIT_BOARD_H
+
+
 #include <bits/stdc++.h>
 #include "helperFunctions.h"
 
@@ -363,7 +367,7 @@ public:
                 }
             }
         }
-        // --- SLIDING PIECES ---
+        // SLIDING PIECES 
         else {
             int dr[] = {-1, -1, 1, 1, -1, 1, 0, 0}; 
             int dc[] = {-1, 1, -1, 1, 0, 0, -1, 1};
@@ -495,3 +499,7 @@ public:
                     move.getPromo());
     }
 };
+
+
+
+#endif
