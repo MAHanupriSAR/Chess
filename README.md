@@ -1,66 +1,103 @@
+
 # Chess Engine
-A chess application integrating a React frontend with a C++ engine compiled to WebAssembly.
+A compact chess application combining a React frontend with a C++ engine compiled to WebAssembly (WASM).
 
-# Overview
-This project runs a custom chess engine in the browser using WebAssembly for move generation and search. The UI is built with React 19 and Vite.
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Engine](#engine)
+    - [Board Representation](#board-representation)
+    - [Search & Evaluation](#search--evaluation)
+- [Project Structure](#project-structure)
+- [Setup](#setup)
+    - [Prerequisites](#prerequisites)
+    - [Install & Run](#install--run)
+- [Limitations & Roadmap](#limitations--roadmap)
+- [License](#license)
 
-# Game Logic
-- **Move Validation**: Validates standard moves including En Passant, Castling (Kingside/Queenside), and Pawn Promotion.
-- **Game States**: Detects Check and Checkmate.
-- **Modes**:
-    - PvP : Local Multiplayer
-    - PvE : Player v/s Computer
-- **Side Selection**: Play as White or Black against the engine.
+## Overview
+This project runs a custom chess engine in the browser using WebAssembly for move generation and search. The UI is built with React (Vite) and communicates with the compiled engine for move generation in PvE mode.
 
-# Engine Implementation
-The engine is written in C++ and compiled to WASM. It currently uses:
-- **Board Representation**: Bitboards (64-bit integers) for board state.
-- **Search Algorithm**: Minimax with Alpha-Beta pruning.
-- **Search Depth**: Fixed depth of 5 plies.
-- ## Evaluation:
-    - Material counting.
-    - Piece-Square Tables (PST) for positional scoring.
-    - Basic stalemate and checkmate detection scores.
+## Features
+- Move validation including En Passant, Castling (kingside/queenside), and Pawn Promotion
+- Check and Checkmate detection
+- Game modes: PvP (local) and PvE (against the engine)
+- Side selection: play as White or Black
 
-# Project Structure
+## Engine
+The engine is implemented in C++ and compiled to WebAssembly for use in the browser.
+
+### Board Representation
+- Uses bitboards (64-bit integers) to represent board state efficiently.
+
+### Search & Evaluation
+- Search algorithm: Minimax with Alpha-Beta pruning
+- Fixed search depth (currently 5 plies)
+- Evaluation consists of material counting and piece-square tables (PST). Basic checkmate/stalemate scoring is included.
+
+## Project Structure
 ```
 src/
-├── components/     # React UI (Board, GameMenu)
-├── engine/         # C++ source files
-│   ├── engine.cpp  # Minimax & evaluation logic
-│   └── bitBoard.h  # Bitboard definitions
-├── utils/          # JavaScript logic for game rules/workers
-└── assets/         # SVG pieces and sounds
+├── components/     # React UI (Board, GameMenu, Pieces, Squares)
+├── engine/         # C++ source + generated WASM glue (engine.cpp, bitBoard.*)
+│   ├── engine.cpp
+│   ├── bitBoard.cpp/h
+│   └── engine.js    # WASM glue/runtime wrapper
+├── utils/          # JS game logic and helpers (move validation, workers)
+└── assets/         # SVG pieces, alternative piece sets, sounds
 ```
 
-# Setup and Build
-Prerequisites
+Key files:
+- [src/main.jsx](src/main.jsx#L1) - App entry
+- [src/components/Board.jsx](src/components/Board.jsx#L1) - Board rendering
+- [src/engine/engine.js](src/engine/engine.js#L1) - WASM loader/shim
+
+## Setup
+
+### Prerequisites
 - Node.js
-- C++ Compiler (for engine rebuilding, if applicable)
-- Emscripten (if recompiling WASM)
-## Installation
-```
+- C++ compiler (only required if you rebuild the WASM engine)
+- Emscripten (only required if you recompile the C++ to WASM)
+
+### Install & Run
+Install dependencies:
+
+```bash
 npm install
 ```
-## Development
-```
+
+Run development server:
+
+```bash
 npm run dev
 ```
-## Production Build
-```
+
+Build for production:
+
+```bash
 npm run build
 ```
 
-# Current Limitations and To-Do
-Based on the current codebase and roadmap:
-- **Engine**: Search depth is hardcoded to 5. No time management or iterative deepening implemented yet.
-- **Opening Book**: No opening book; engine calculates from move 1.
-- **Endgame**: No endgame tablebases.
-## Roadmap
-[x] Check/Checkmate logic
-[x] En Passant & Castling
-[x] Pawn Promotion
-[x] Basic Engine (Minimax)
-[ ] Move ordering optimizations
-[ ] Quiescence search to reduce horizon effect
-[ ] Time control management
+If you need to recompile the engine to WASM, follow the steps in the `engine/` folder and ensure Emscripten is configured.
+
+## Limitations & Roadmap
+
+### Current Limitations
+- Engine search depth is hardcoded to 5 plies
+- No iterative deepening or time management
+- No opening book or endgame tablebases
+
+### Roadmap
+- [x] Implement check/checkmate detection
+- [x] Handle En Passant & Castling
+- [x] Pawn Promotion
+- [x] Basic engine (Minimax)
+- [ ] Move ordering optimizations
+- [ ] Quiescence search
+- [ ] Time control management / iterative deepening
+
+## License
+See the project repository for licensing details.
+
+---
+Updated README structure for clarity and navigation.
