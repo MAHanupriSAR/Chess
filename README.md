@@ -95,9 +95,3 @@ If you need to recompile the engine to WASM, follow the steps in the `engine/` f
 - [ ] Move ordering optimizations
 - [ ] Quiescence search
 - [ ] Time control management / iterative deepening
-
-## License
-See the project repository for licensing details.
-
----
-Updated README structure for clarity and navigation.
